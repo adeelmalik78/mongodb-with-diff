@@ -1,0 +1,96 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: amalik1
+      changes:
+        - runCommand:
+            command: |
+              {
+                  insert: "books",
+                  documents: [ { title: "Adeel1" }, { title: "Adeel2" }, { title: "Adeel3" } ],
+                  ordered: true,
+                  maxTimeMS: 10,
+                  writeConcern: { },
+                  bypassDocumentValidation: true,
+                  comment: "foo bar"
+              }
+        - rollback:
+          - runCommand:
+              command: |
+                {
+                  delete: "books",
+                  deletes: [
+                    { q: { title: "Adeel1" }, limit: 1}
+                  ]
+                }
+
+  - changeSet:
+      id: 2
+      author: amalik2
+      changes:
+        - runCommand:
+            command: |
+              {
+                update: "books"
+                updates: [
+                  {
+                    q: { _id: "PT_RESTRICTED_COUNTRY_CODE_PROCESSING_BRANCHES_A_PAYMENT_TRACKER_RESTRICTION" },
+                    u: {
+                      $set: {
+                        code: "PT_RESTRICTED_COUNTRY_CODE_PROCESSING_BRANCHES",
+                        isActive: "A",
+                        stargateLastUpdatedTimestamp: "2025-04-28T09:43:32.230Z",
+                        type: "PAYMENT_TRACKER_RESTRICTION",
+                        value: "ABC:123"
+                      }
+                    },
+                    upsert: true
+                  },
+                  {
+                    q: { _id: "PT_US_RESTRICTION_A_PAYMENT_TRACKER_RESTRICTION_true" },
+                    u: {
+                      $set: {
+                        code: "PT_US_RESTRICTION",
+                        isActive: "A",
+                        stargateLastUpdatedTimestamp: "2025-04-28T09:43:32.230Z",
+                        type: "PAYMENT_TRACKER_RESTRICTION",
+                        value: "true"
+                      }
+                    },
+                    upsert: true
+                  }
+                ]
+              }
+
+        - rollback:
+          - runCommand:
+              command: |
+                {
+                  update: "books"
+                  updates: [
+                    {
+                      q: { _id: "PT_RESTRICTED_COUNTRY_CODE_PROCESSING_BRANCHES_A_PAYMENT_TRACKER_RESTRICTION" },
+                      u: {
+                        $set: {
+                          code: "1",  
+                          isActive: "1",  
+                          stargateLastUpdatedTimestamp: "1",  
+                          type: "1",  
+                          value: "1"  
+                        }
+                      }
+                    },
+                    {
+                      q: { _id: "PT_US_RESTRICTION_A_PAYMENT_TRACKER_RESTRICTION_true" },
+                      u: {
+                        $set: {
+                          code: "0",  
+                          isActive: "0",  
+                          stargateLastUpdatedTimestamp: "0",  
+                          type: "0",  
+                          value: "0"  
+                        }
+                      }
+                    }
+                  ]
+                }
